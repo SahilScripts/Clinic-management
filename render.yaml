@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: clinic-management-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/test
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    # Environment variables that need to be set in Render dashboard:
+    # - GOOGLE_CREDENTIALS (JSON string of your credential.json content)
+    # - EMAIL_CREDENTIALS (JSON string of your Email_Credentials.json content)
+    # - SPREADSHEET_ID (your Google Sheets ID)

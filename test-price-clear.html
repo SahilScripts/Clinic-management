@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Price Field Clear Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Price Field Clear Functionality</h1>
+    
+    <div class="test-section">
+        <h2>Manual Test Instructions</h2>
+        <p>To test the price field clearing functionality:</p>
+        <ol>
+            <li>Go to the main application at <a href="http://localhost:10000" target="_blank">http://localhost:10000</a></li>
+            <li>Navigate to the Blood Test module</li>
+            <li>In the "Test Name" field, type a test name (e.g., "CBC")</li>
+            <li>Wait for the price estimation to appear and the price field to be populated</li>
+            <li>Clear the "Test Name" field completely (select all and delete, or backspace)</li>
+            <li>Verify that the price field becomes empty</li>
+            <li>Try different methods of clearing: Ctrl+A + Delete, Backspace, Cut (Ctrl+X)</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Automated Test Simulation</h2>
+        <p>This simulates the behavior that should happen in the main application:</p>
+        
+        <div class="form-group">
+            <label for="testTestName">Test Name:</label>
+            <input type="text" id="testTestName" placeholder="Enter test name">
+        </div>
+        
+        <div class="form-group">
+            <label for="testPrice">Price:</label>
+            <input type="number" id="testPrice" placeholder="Price will be auto-filled" readonly>
+        </div>
+        
+        <button onclick="simulateTestEntry()">Simulate Test Entry</button>
+        <button onclick="clearTestName()">Clear Test Name</button>
+        <button onclick="resetForm()">Reset Form</button>
+        
+        <div id="testResult"></div>
+    </div>
+
+    <script>
+        const testNameInput = document.getElementById('testTestName');
+        const priceInput = document.getElementById('testPrice');
+        const resultDiv = document.getElementById('testResult');
+
+        // Simulate the behavior from the main application
+        testNameInput.addEventListener('input', function() {
+            const value = this.value.trim();
+            
+            if (!value) {
+                // Clear price when test name is empty
+                priceInput.value = '';
+                showResult('✅ Price field cleared when test name is empty', 'success');
+            } else {
+                // Simulate price estimation (in real app, this would be async)
+                setTimeout(() => {
+                    priceInput.value = Math.floor(Math.random() * 1000) + 100; // Random price
+                    showResult('💰 Price estimated for: ' + value, 'success');
+                }, 500);
+            }
+        });
+
+        testNameInput.addEventListener('keyup', function() {
+            const value = this.value.trim();
+            if (!value && priceInput.value) {
+                priceInput.value = '';
+                showResult('✅ Price cleared on keyup (handles backspace/delete)', 'success');
+            }
+        });
+
+        function simulateTestEntry() {
+            testNameInput.value = 'Complete Blood Count (CBC)';
+            testNameInput.dispatchEvent(new Event('input'));
+        }
+
+        function clearTestName() {
+            testNameInput.value = '';
+            testNameInput.dispatchEvent(new Event('input'));
+            testNameInput.dispatchEvent(new Event('keyup'));
+        }
+
+        function resetForm() {
+            testNameInput.value = '';
+            priceInput.value = '';
+            showResult('🔄 Form reset - both fields cleared', 'success');
+        }
+
+        function showResult(message, type) {
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+            setTimeout(() => {
+                resultDiv.innerHTML = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
